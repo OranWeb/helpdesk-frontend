@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Help Desk Ticket System</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #f5f7fa;
+        color: #333;
+        line-height: 1.6;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        transition: all 0.3s ease;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .header h1 {
+        color: #2c3e50;
+        font-size: 28px;
+        margin-bottom: 10px;
+      }
+
+      .header p {
+        color: #7f8c8d;
+        font-size: 16px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #2c3e50;
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 16px;
+        transition: border-color 0.3s;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        border-color: #3498db;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+      }
+
+      textarea {
+        min-height: 120px;
+        resize: vertical;
+      }
+
+      .error {
+        color: #e74c3c;
+        font-size: 14px;
+        margin-top: 5px;
+        display: none;
+      }
+
+      .btn {
+        display: inline-block;
+        background-color: #3498db;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .btn:hover {
+        background-color: #2980b9;
+      }
+
+      .btn:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.4);
+      }
+
+      .btn-success {
+        background-color: #2ecc71;
+      }
+
+      .btn-success:hover {
+        background-color: #27ae60;
+      }
+
+      #password-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+
+      #password-form input {
+        max-width: 300px;
+        margin: 0 auto 15px;
+      }
+
+      #success-message {
+        display: none;
+        background-color: #e8f7f0;
+        border-left: 4px solid #2ecc71;
+        padding: 20px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+      }
+
+      #success-message h2 {
+        color: #27ae60;
+        margin-bottom: 10px;
+      }
+
+      .priority-option {
+        position: relative;
+        padding-left: 25px;
+      }
+
+      select option[value="low"] {
+        color: #27ae60;
+      }
+
+      select option[value="medium"] {
+        color: #f39c12;
+      }
+
+      select option[value="high"] {
+        color: #e67e22;
+      }
+
+      select option[value="critical"] {
+        color: #e74c3c;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 20px;
+        }
+
+        .header h1 {
+          font-size: 24px;
+        }
+
+        input,
+        select,
+        textarea {
+          padding: 10px;
+        }
+
+        .btn {
+          padding: 10px 20px;
+          font-size: 14px;
+        }
+      }
+
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        padding: 0;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+      }
+
+      #password-section,
+      #ticket-form-section,
+      #success-section {
+        transition: opacity 0.3s ease;
+      }
+
+      #ticket-form-section,
+      #success-section {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Password Protection Section -->
+      <section id="password-section">
+        <div class="header">
+          <h1>Help Desk Access</h1>
+          <p>Please enter the password to access the ticket submission form</p>
+        </div>
+
+        <form id="password-form">
+          <div class="form-group">
+            <label for="password">Password:</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Enter access password"
+              required
+            />
+            <div class="error" id="password-error">
+              Incorrect password. Please try again.
+            </div>
+          </div>
+
+          <button type="submit" class="btn" id="password-submit">
+            Access Ticket System
+          </button>
+        </form>
+      </section>
+
+      <!-- Ticket Submission Form Section -->
+      <section id="ticket-form-section">
+        <div class="header">
+          <h1>Help Desk Ticket Submission</h1>
+          <p>Please fill out the form below to submit a support ticket</p>
+        </div>
+
+        <form id="ticket-form">
+          <div class="form-group">
+            <label for="name">Full Name:</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              placeholder="Enter your full name"
+              required
+            />
+            <div class="error" id="name-error">Full name is required.</div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email Address:</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Enter your email address"
+              required
+            />
+            <div class="error" id="email-error">
+              Please enter a valid email address.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="organization">Organization Name:</label>
+            <input
+              type="text"
+              id="organization"
+              name="organization"
+              placeholder="Enter your organization name"
+              required
+            />
+            <div class="error" id="organization-error">
+              Organization name is required.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Contact Number:</label>
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              placeholder="Enter your contact number"
+              required
+            />
+            <div class="error" id="phone-error">
+              Please enter a valid phone number.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="issue-type">Issue Type:</label>
+            <select id="issue-type" name="issue-type" required>
+              <option value="" disabled selected>Select an issue type</option>
+              <option value="hardware">Hardware Problem</option>
+              <option value="software">Software Issue</option>
+              <option value="network">Network Connectivity</option>
+              <option value="email">Email Problem</option>
+              <option value="access">Access/Permission Issue</option>
+              <option value="account">Account Management</option>
+              <option value="security">Security Concern</option>
+              <option value="other">Other</option>
+            </select>
+            <div class="error" id="issue-type-error">
+              Please select an issue type.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="priority">Priority Level:</label>
+            <select id="priority" name="priority" required>
+              <option value="" disabled selected>Select priority level</option>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+              <option value="critical">Critical</option>
+            </select>
+            <div class="error" id="priority-error">
+              Please select a priority level.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="subject">Subject:</label>
+            <input
+              type="text"
+              id="subject"
+              name="subject"
+              placeholder="Brief description of the issue"
+              required
+            />
+            <div class="error" id="subject-error">Subject is required.</div>
+          </div>
+
+          <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea
+              id="description"
+              name="description"
+              placeholder="Please provide details of your issue..."
+              required
+            ></textarea>
+            <div class="error" id="description-error">
+              Description is required.
+            </div>
+          </div>
+
+          <button type="submit" class="btn" id="submit-ticket">
+            Submit Ticket
+          </button>
+        </form>
+      </section>
+
+      <!-- Success Section -->
+      <section id="success-section">
+        <div id="success-message">
+          <h2>Ticket Submitted Successfully!</h2>
+          <p>
+            Your support ticket has been submitted. Our team will review your
+            issue and respond as soon as possible.
+          </p>
+          <p id="reference-number">Your reference number will appear here</p>
+        </div>
+
+        <button type="button" class="btn btn-success" id="new-ticket-btn">
+          Submit Another Ticket
+        </button>
+      </section>
+    </div>
+    <div class="container" style="margin-top: 25px; justify-items: center">
+      <p style="">
+        Powered by
+        <a
+          href="https://github.com/OranWeb/helpdesk-frontend"
+          style="color: mediumseagreen; text-decoration: none"
+          >HelpDesk-Frontend</a
+        >
+        Project
+      </p>
+    </div>
+
+    <script>
+      const passwordSection = document.getElementById("password-section");
+      const ticketFormSection = document.getElementById("ticket-form-section");
+      const successSection = document.getElementById("success-section");
+      const passwordForm = document.getElementById("password-form");
+      const ticketForm = document.getElementById("ticket-form");
+      const newTicketBtn = document.getElementById("new-ticket-btn");
+
+      // REPLACE THIS WITH YOUR DISCORD WEBHOOK URL ALSO WORKS WITH SLACK
+      const DISCORD_WEBHOOK_URL = "DISCORDWEBHOOKURLHERE";
+
+      // Password hash (SHA-256) of "helloworld"
+      // This is still not perfectly secure, but much better than plaintext
+      // To generate a hashed password simply edit and copy paste the javascript code in the readme file into web console
+
+      const PASSWORD_HASH =
+        "936a185caaa266bb9cbe981e9e05cb78cd732b0b3280eb944412bb6f8f8f07af";
+
+      async function sha256(message) {
+        const msgBuffer = new TextEncoder().encode(message);
+        const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
+        return Array.from(new Uint8Array(hashBuffer))
+          .map((b) => b.toString(16).padStart(2, "0"))
+          .join("");
+      }
+
+      passwordForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        console.log("Password form submitted");
+
+        const passwordInput = document.getElementById("password");
+        const passwordError = document.getElementById("password-error");
+
+        try {
+          const inputHash = await sha256(passwordInput.value);
+          console.log("Password hashed, comparing...");
+
+          if (inputHash === PASSWORD_HASH) {
+            console.log("Password correct, showing ticket form");
+            passwordSection.style.display = "none";
+            ticketFormSection.style.display = "block";
+
+            passwordInput.value = "";
+            passwordError.style.display = "none";
+          } else {
+            console.log("Password incorrect");
+            passwordError.style.display = "block";
+            passwordInput.focus();
+          }
+        } catch (error) {
+          console.error("Error in password verification:", error);
+          passwordError.style.display = "block";
+          passwordInput.focus();
+        }
+      });
+
+      function validateEmail(email) {
+        const re =
+          /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+      }
+
+      function validatePhone(phone) {
+        const re = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+        return re.test(String(phone));
+      }
+
+      function validateRequired(value) {
+        return value.trim() !== "";
+      }
+
+      function showError(fieldId, show) {
+        const errorElement = document.getElementById(`${fieldId}-error`);
+        if (errorElement) {
+          errorElement.style.display = show ? "block" : "none";
+        }
+      }
+
+      ticketForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const organization = document.getElementById("organization").value;
+        const phone = document.getElementById("phone").value;
+        const issueType = document.getElementById("issue-type").value;
+        const priority = document.getElementById("priority").value;
+        const subject = document.getElementById("subject").value;
+        const description = document.getElementById("description").value;
+
+        let isValid = true;
+
+        if (!validateRequired(name)) {
+          showError("name", true);
+          isValid = false;
+        } else {
+          showError("name", false);
+        }
+
+        if (!validateEmail(email)) {
+          showError("email", true);
+          isValid = false;
+        } else {
+          showError("email", false);
+        }
+
+        if (!validateRequired(organization)) {
+          showError("organization", true);
+          isValid = false;
+        } else {
+          showError("organization", false);
+        }
+
+        if (!validatePhone(phone)) {
+          showError("phone", true);
+          isValid = false;
+        } else {
+          showError("phone", false);
+        }
+
+        if (!validateRequired(issueType)) {
+          showError("issue-type", true);
+          isValid = false;
+        } else {
+          showError("issue-type", false);
+        }
+
+        if (!validateRequired(priority)) {
+          showError("priority", true);
+          isValid = false;
+        } else {
+          showError("priority", false);
+        }
+
+        if (!validateRequired(subject)) {
+          showError("subject", true);
+          isValid = false;
+        } else {
+          showError("subject", false);
+        }
+
+        if (!validateRequired(description)) {
+          showError("description", true);
+          isValid = false;
+        } else {
+          showError("description", false);
+        }
+
+        if (isValid) {
+          submitTicketToDiscord({
+            name,
+            email,
+            organization,
+            phone,
+            issueType,
+            priority,
+            subject,
+            description,
+            timestamp: new Date().toISOString(),
+          });
+        }
+      });
+
+      function submitTicketToDiscord(ticketData) {
+        const ticketNumber = `TKT-${Math.floor(Math.random() * 10000)
+          .toString()
+          .padStart(4, "0")}`;
+
+        const priorityColors = {
+          low: 3066993,
+          medium: 16761856,
+          high: 15105570,
+          critical: 15158332,
+        };
+
+        const embed = {
+          title: `New Ticket: ${ticketData.subject}`,
+          description: `**Ticket Number: #${ticketNumber}**`,
+          color: priorityColors[ticketData.priority] || 0,
+          fields: [
+            {
+              name: "Name",
+              value: ticketData.name,
+              inline: true,
+            },
+            {
+              name: "Organization",
+              value: ticketData.organization,
+              inline: true,
+            },
+            {
+              name: "Contact Email",
+              value: ticketData.email,
+              inline: true,
+            },
+            {
+              name: "Contact Phone",
+              value: ticketData.phone,
+              inline: true,
+            },
+            {
+              name: "Issue Type",
+              value:
+                ticketData.issueType.charAt(0).toUpperCase() +
+                ticketData.issueType.slice(1),
+              inline: true,
+            },
+            {
+              name: "Priority",
+              value:
+                ticketData.priority.charAt(0).toUpperCase() +
+                ticketData.priority.slice(1),
+              inline: true,
+            },
+            {
+              name: "Description",
+              value: ticketData.description,
+            },
+          ],
+          timestamp: ticketData.timestamp,
+          footer: {
+            text: "Help Desk Ticket System",
+          },
+        };
+
+        const webhookData = {
+          content: `New Help Desk Ticket Submitted - #${ticketNumber}`,
+          embeds: [embed],
+        };
+
+        fetch(DISCORD_WEBHOOK_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(webhookData),
+        })
+          .then((response) => {
+            if (response.ok) {
+              showSuccessMessage(ticketNumber);
+            } else {
+              alert(
+                "There was an error submitting your ticket. Please try again later."
+              );
+              console.error("Discord webhook submission failed:", response);
+            }
+          })
+          .catch((error) => {
+            alert(
+              "There was an error submitting your ticket. Please try again later."
+            );
+            console.error("Discord webhook submission error:", error);
+          });
+      }
+
+      function showSuccessMessage(ticketNumber) {
+        ticketFormSection.style.display = "none";
+        successSection.style.display = "block";
+
+        const successMessage = document.getElementById("success-message");
+        successMessage.style.display = "block";
+
+        const refNumberParagraph = document.getElementById("reference-number");
+        if (refNumberParagraph) {
+          refNumberParagraph.innerHTML = `Your reference number is: <strong>#${ticketNumber}</strong>`;
+        }
+
+        ticketForm.reset();
+      }
+
+      newTicketBtn.addEventListener("click", function () {
+        successSection.style.display = "none";
+        ticketFormSection.style.display = "block";
+      });
+
+      document.getElementById("email").addEventListener("blur", function () {
+        showError("email", !validateEmail(this.value) && this.value !== "");
+      });
+
+      document.getElementById("phone").addEventListener("blur", function () {
+        showError("phone", !validatePhone(this.value) && this.value !== "");
+      });
+
+      const selectElements = document.querySelectorAll("select");
+      selectElements.forEach((select) => {
+        select.addEventListener("keydown", function (e) {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            this.click();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
